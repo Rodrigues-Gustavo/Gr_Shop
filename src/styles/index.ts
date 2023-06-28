@@ -19,7 +19,7 @@ export const {
       gray300: '#c4c4cc',
       gray100: '#e1e1e6',
       
-      first: '#8257e6',
+      primary: '#8257e6',
       secondary: '#8259f9',
     },
 
