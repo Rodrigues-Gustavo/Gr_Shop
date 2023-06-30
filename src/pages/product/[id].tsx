@@ -1,7 +1,10 @@
 import { stripe } from '@/lib/stripe';
 import { ImageContainer, ProductContainer, ProductDetails } from '@/styles/pages/product'
+import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next'
+import Head from 'next/head';
 import Image from 'next/image';
+import { useState } from 'react';
 import Stripe from 'stripe';
 
 interface ProductProps {
@@ -11,13 +14,37 @@ interface ProductProps {
     imageUrl: string;
     price: string;
     description: string;
+    defaultPriceId: string;
   }
 }
 
-export const Product = ({ product }: ProductProps) => {
+export default function Product({ product }: ProductProps) {
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true);
+
+      const res = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId,
+      })
+
+      const { checkoutUrl } = res.data;
+
+      window.location.href = checkoutUrl
+    } catch (error) {
+      setIsCreatingCheckoutSession(false);
+      alert('Falaha ao redirecionar ao checkout!')
+    }
+  }
 
   return (
-    <ProductContainer>
+    <>
+      <Head>
+        <title>{product.name} | Gr Streetwear</title>
+      </Head>
+
+      <ProductContainer>
       <ImageContainer>
         <Image src={product.imageUrl} width={520} height={480} alt="" />
       </ImageContainer>
@@ -25,17 +52,20 @@ export const Product = ({ product }: ProductProps) => {
         <h1>{product.name}</h1>
         <span>{product.price}</span>
         <p>{product.description}</p>
+        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>comprar agora</button>
       </ProductDetails>
     </ProductContainer>
+    </>
   )
 }
 
-export const getStaticPaths: GetStaticPaths = async () = > {
+export const getStaticPaths: GetStaticPaths = async () => {
+
   return {
     paths: [
       { params: { id: 'id-product-is-here' }}
     ],
-    fallback: 'true',
+    fallback: 'blocking',
   }
 }
 
@@ -59,8 +89,13 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
           currency: 'BRL',
         }).format(price.unit_amount / 100),
         description: product.descripton,
+        defaultPriceId: price.id,
       }
     },
     revalidate: 60 * 60 * 1, // 1 hour
   }
 }
+function async() {
+  throw new Error('Function not implemented.');
+}
+
