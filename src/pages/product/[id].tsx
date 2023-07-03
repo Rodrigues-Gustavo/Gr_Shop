@@ -9,12 +9,12 @@ import Stripe from 'stripe';
 
 interface ProductProps {
   product: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    price: string;
-    description: string;
-    defaultPriceId: string;
+    id: string
+    name: string
+    imageUrl: string
+    price: string
+    description: string
+    defaultPriceId: string
   }
 }
 
@@ -46,7 +46,11 @@ export default function Product({ product }: ProductProps) {
 
       <ProductContainer>
       <ImageContainer>
-        <Image src={product.imageUrl} width={520} height={480} alt="" />
+        {
+          product.imageUrl &&
+          <Image src={product.imageUrl} width={520} height={480} alt="" />
+        }
+        
       </ImageContainer>
       <ProductDetails>
         <h1>{product.name}</h1>
@@ -63,7 +67,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: [
-      { params: { id: 'id-product-is-here' }}
+      { params: { id: 'prod_OCAfRuWDmhmN9h' }},
     ],
     fallback: 'blocking',
   }
@@ -73,7 +77,7 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
   const productId = params.id;
 
   const product = await stripe.products.retrieve(productId, {
-    expand: ['default_price'],
+    expand: ['default_price']
   });
 
   const price =product.default_price as Stripe.Price
@@ -86,16 +90,13 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
         imageURL: product.images[0],
         price: new Intl.NumberFormat('pt-BR', {
           style: 'currency',
-          currency: 'BRL',
+          currency: 'BRL'
         }).format(price.unit_amount / 100),
-        description: product.descripton,
+        description: product.description,
         defaultPriceId: price.id,
       }
     },
     revalidate: 60 * 60 * 1, // 1 hour
   }
-}
-function async() {
-  throw new Error('Function not implemented!');
 }
 
