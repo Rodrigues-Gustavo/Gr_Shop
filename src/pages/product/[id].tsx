@@ -96,6 +96,6 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
   }
 }
 function async() {
-  throw new Error('Function not implemented.');
+  throw new Error('Function not implemented!');
 }
 
