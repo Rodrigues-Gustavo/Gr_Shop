@@ -35,9 +35,23 @@ export default function Home({ products }: HomeProps) {
           return (
             <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
               <Product className="keen-slider__slide">
-                {
-                  product?.imageUrl && (<Image src={product.imageUrl} width={520} height={480} alt="" />)
+                {product.imageUrl && 
+                  (
+                    <Image
+                      src={product.imageUrl} 
+                      key={product.id} 
+                      width={520} height={480} 
+                      alt="" 
+                    />
+                  )
                 }
+                {/* <Image 
+                  src={product.imageUrl} 
+                  key={product.id} 
+                  width={520} 
+                  height={480} 
+                  alt=""
+                /> */}
                 <footer>
                   <strong>{product.name}</strong>
                   <span>{product.price}</span>
