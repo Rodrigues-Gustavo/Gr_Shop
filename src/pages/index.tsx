@@ -40,7 +40,8 @@ export default function Home({ products }: HomeProps) {
                     <Image
                       src={product.imageUrl} 
                       key={product.id} 
-                      width={520} height={480} 
+                      width={520} 
+                      height={480} 
                       alt="" 
                     />
                   )
@@ -80,15 +81,7 @@ export const getStaticProps: GetStaticProps = async () => {
       price: new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
-      }).format(price.unit_amount / 100)
-
-      // id: product.id,
-      // name: product.name,
-      // imageURL: product.images[0],
-      // price: new Intl.NumberFormat('pt-BR', {
-      //   style: 'currency',
-      //   currency: 'BRL'
-      // }).format(price.unit_amount / 100),
+      }).format(price.unit_amount / 100),
     }
   })
 
